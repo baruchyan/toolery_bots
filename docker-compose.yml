@@ -1,0 +1,108 @@
+version: '3.7'
+volumes:
+    db_toolery_bots:
+services:
+    app:
+      &app
+        build: ./docker/php
+        hostname: ${APP_DOMAIN}
+        container_name: ${CONTAINER_PREFIX}_app
+        working_dir: /opt/app/src
+        volumes:
+            - ./:/opt/app/src
+            - ./storage:/opt/app/src/storage:delegated
+            - /etc/localtime:/etc/localtime:ro
+        environment:
+            - "APP_KEY=base64:lUu9q9bs/N7nQlj5k6xHP/0sulgS5XGLPTPqZgG6z4E="
+            - "APP_URL=${APP_URL}"
+            - "APP_DOMAIN=${APP_DOMAIN}"
+            - "FORCE_HTTPS=${FORCE_HTTPS}"
+            - "APP_NAME=${APP_NAME}"
+            - "REDIS_PASSWORD=${REDIS_PASSWORD}"
+            - "MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}"
+            - RABBITMQ_HOST=rabbitmq
+            - RABBITMQ_PORT=${SERVICE_RABBIT_INTERNAL_PORT}
+            - RABBITMQ_LOGIN=${SERVICE_RABBIT_USER}
+            - RABBITMQ_PASSWORD=${SERVICE_RABBIT_PASSWORD}
+        depends_on:
+            - db
+            - redis
+            - rabbitmq
+        networks:
+            - toolery_bots_network
+    app-queue:
+        <<: *app
+        container_name: ${CONTAINER_PREFIX}_app_queue
+        command: php artisan horizon
+        restart: always
+    app-scheduler:
+        <<: *app
+        container_name: ${CONTAINER_PREFIX}_app_scheduler
+        command: php artisan schedule:work
+        restart: always
+
+    nginx:
+        build: ./docker/nginx
+        container_name: ${CONTAINER_PREFIX}_nginx
+        depends_on:
+            - app
+        ports:
+            - ${SERVICE_NGINX_IP}:${SERVICE_NGINX_PORT}:80
+        volumes:
+            - ./public:/opt/app/src/public:ro,cached
+            - ./storage:/opt/app/src/storage:ro,cached
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - toolery_bots_network
+    db:
+        build: ./docker/db
+        container_name: ${CONTAINER_PREFIX}_db
+        environment:
+            POSTGRES_PASSWORD: ${SERVICE_POSTGRES_PASSWORD}
+            POSTGRES_USER: ${SERVICE_POSTGRES_USERNAME}
+            POSTGRES_DB: ${SERVICE_POSTGRES_DATABASE}
+        ports:
+            - ${SERVICE_POSTGRES_IP}:${SERVICE_POSTGRES_PORT}:5432
+        restart: always
+        volumes:
+            - db_toolery_bots:/var/lib/postgresql
+            - ./docker/db/dumps:/backups
+            - /etc/localtime:/etc/localtime:ro
+
+        networks:
+            - toolery_bots_network
+    redis:
+        build: ./docker/redis
+        command: redis-server --requirepass ${SERVICE_REDIS_PASSWORD}
+        container_name: ${CONTAINER_PREFIX}_redis
+        restart: unless-stopped
+        ports:
+            - ${REDIS_IP}:${SERVICE_REDIS_PORT}:6379
+        environment:
+            SERVICE_NAME: redis
+            SERVICE_TAGS: dev
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - toolery_bots_network
+    rabbitmq:
+        image: rabbitmq:4.3.2-management
+        container_name: ${CONTAINER_PREFIX}_rabbitmq
+        hostname: rabbitmq
+        restart: always
+        environment:
+            - RABBITMQ_DEFAULT_USER=${SERVICE_RABBIT_USER}
+            - RABBITMQ_DEFAULT_PASS=${SERVICE_RABBIT_PASSWORD}
+        ports:
+            - ${SERVICE_RABBIT_IP}:${SERVICE_RABBIT_EXTERNAL_PORT}:${SERVICE_RABBIT_INTERNAL_PORT}
+            - ${SERVICE_RABBIT_IP}:${SERVICE_RABBIT_DASHBOARD_PORT}:15672
+#        volumes:
+#            - ./rabbitmq:/var/lib/rabbitmq
+        networks:
+            - toolery_bots_network
+networks:
+    toolery_bots_network:
+        driver: bridge
+        ipam:
+            driver: default
+

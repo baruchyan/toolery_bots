@@ -1,0 +1,19 @@
+parameters:
+  level: 8
+  scanDirectories:
+    #- %currentWorkingDirectory%/bin/.phpunit
+  paths:
+    - %currentWorkingDirectory%/app
+    - %currentWorkingDirectory%/domains
+    - %currentWorkingDirectory%/tests
+  reportUnmatchedIgnoredErrors: false
+  fileExtensions:
+    - php
+  excludePaths:
+    analyse:
+      - domains/Searcher/Presentation/Routes/api.php
+    analyseAndScan:
+      - app
+  ignoreErrors:
+  		-
+  			identifier: missingType.iterableValue
