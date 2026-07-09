@@ -11,7 +11,7 @@ parameters:
     - php
   excludePaths:
     analyse:
-      - domains/Searcher/Presentation/Routes/api.php
+      - domains/Telegram/Presentation/Routes/api.php
     analyseAndScan:
       - app
   ignoreErrors:

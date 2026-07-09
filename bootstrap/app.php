@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-
+            Route::middleware(['api',])
+                ->prefix('api/telegram')
+                ->name('api.telegram.')
+                ->group(base_path('domains/Telegram/Presentation/Routes/api.php'));
         }
     )
 
