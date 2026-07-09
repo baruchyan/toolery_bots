@@ -22,6 +22,7 @@ use MoonShine\Laravel\Pages\Dashboard;
 use MoonShine\Laravel\Pages\ErrorPage;
 use MoonShine\Laravel\Pages\LoginPage;
 use MoonShine\Laravel\Pages\ProfilePage;
+use App\Http\Middleware\CheckAdmin;
 
 return [
     'title' => env('MOONSHINE_TITLE', 'MoonShine'),
@@ -63,6 +64,7 @@ return [
         VerifyCsrfToken::class,
         SubstituteBindings::class,
         ChangeLocale::class,
+        CheckAdmin::class
     ],
 
     // Storage
@@ -74,7 +76,7 @@ return [
     'auth' => [
         'enabled' => true,
         'guard' => 'moonshine',
-        'model' => MoonshineUser::class,
+        'model' => \App\Models\User::class,
         'middleware' => [
             Authenticate::class,
         ],
@@ -91,7 +93,7 @@ return [
 
     // Layout, palette, pages, forms
     'layout' => App\MoonShine\Layouts\MoonShineLayout::class,
-    'palette' => MoonShine\ColorManager\Palettes\OrangePalette::class,
+    'palette' => MoonShine\ColorManager\Palettes\NeutralPalette::class,
 
     'forms' => [
         'login' => LoginForm::class,
@@ -106,7 +108,7 @@ return [
     ],
 
     // Localizations
-    'locale' => 'en',
+    'locale' => 'ru',
     'locale_key' => ChangeLocale::KEY,
     'locales' => [
         // en
