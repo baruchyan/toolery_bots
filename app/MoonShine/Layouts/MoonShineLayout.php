@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Layouts;
 
-use MoonShine\Laravel\Layouts\AppLayout;
-use MoonShine\ColorManager\Palettes\OrangePalette;
 use MoonShine\ColorManager\ColorManager;
+use MoonShine\ColorManager\Palettes\CyanPalette;
+use MoonShine\ColorManager\Palettes\GrayPalette;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Contracts\ColorManager\PaletteContract;
+use MoonShine\Laravel\Layouts\AppLayout;
+use MoonShine\MenuManager\MenuItem;
+use Telegram\Presentation\MoonShine\Bot\BotResource;
 
 final class MoonShineLayout extends AppLayout
 {
     /**
      * @var null|class-string<PaletteContract>
      */
-    protected ?string $palette = OrangePalette::class;
+    protected ?string $palette = GrayPalette::class;
 
     protected function assets(): array
     {
@@ -28,6 +31,9 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::menu(),
+
+            MenuItem::make(BotResource::class),
+
         ];
     }
 

@@ -33,6 +33,7 @@
         "psr-4": {
             "App\\": "app/",
             "Telegram\\": "domains/Telegram/",
+            "Sample\\": "domains/Sample/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

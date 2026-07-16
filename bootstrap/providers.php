@@ -8,5 +8,6 @@ return [
     App\Providers\MoonShineServiceProvider::class,
     App\Providers\TelescopeServiceProvider::class,
     Telegram\Providers\TelegramServiceProvider::class,
+    \Sample\Providers\SampleServiceProvider::class,
     PermissionServiceProvider::class,
 ];

@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace Telegram\Domain\Enums;
 
-enum BotEnum: string
+use App\Contracts\Stringable;
+
+enum BotEnum: string implements Stringable
 {
     case sample1 = 'sample1';
 
-    case sample2 = 'sample2';
+
+    public function toString(): string
+    {
+        $result = __('telegram.bot.' . $this->value);
+
+        return (is_string($result)) ? $result : 'telegram.bot.' . $this->value;
+    }
 }

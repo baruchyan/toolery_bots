@@ -80,6 +80,7 @@ return [
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
+            'formatter' => \App\Services\Logger\Formatters\MonologJsonWithStacktraceFormatter::class,
         ],
 
         'papertrail' => [

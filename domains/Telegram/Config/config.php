@@ -4,7 +4,5 @@ declare(strict_types=1);
 
 
 return [
-
-
-    'foo' => 'bar'
+    'webhook_url' => env('TELEGRAM_WEBHOOK_URL', config('app.url'))
 ];

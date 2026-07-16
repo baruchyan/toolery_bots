@@ -12,6 +12,7 @@ parameters:
   excludePaths:
     analyse:
       - domains/Telegram/Presentation/Routes/api.php
+      - vendor/*
     analyseAndScan:
       - app
   ignoreErrors:

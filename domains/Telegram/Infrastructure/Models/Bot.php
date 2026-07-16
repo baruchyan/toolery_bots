@@ -14,7 +14,7 @@ use Telegram\Domain\Enums\BotEnum;
  * @property int $id
  * @property bool $is_active
  * @property BotEnum $bot
- * @property string $token
+ * @property ?string $token
  * @property string $webhook_service
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -23,6 +23,8 @@ use Telegram\Domain\Enums\BotEnum;
 class Bot extends Model
 {
     use SoftDeletes;
+
+    protected $table = 'telegram_bots';
 
     protected function casts(): array
     {
