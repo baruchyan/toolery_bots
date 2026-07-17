@@ -7,40 +7,39 @@ namespace Telegram\Infrastructure\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Telegram\Domain\Enums\BotEnum;
 
 /**
  * @property int $id
  * @property bool $is_active
- * @property string $title
- * @property BotEnum $bot
- * @property ?string $token
- * @property string $webhook_service
+ * @property int $bot_id
+ * @property Bot $bot
+ * @property string $command
+ * @property ?string $answer
+ * @property ?string $handler
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
  */
-class Bot extends Model
+class BotCommand extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'telegram_bots';
+    protected $table = 'telegram_bot_commands';
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
-            'bot' => BotEnum::class,
         ];
     }
 
     /**
-     * @return HasMany<BotCommand, $this>
+     * @return BelongsTo<Bot, $this>
      */
-    public function commands(): HasMany
+    public function bot(): BelongsTo
     {
-        return $this->hasMany(BotCommand::class, 'bot_id');
+        return $this->belongsTo(Bot::class, 'bot_id');
     }
 }

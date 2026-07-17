@@ -30,7 +30,7 @@ class BotResource extends ModelResource
 {
     protected string $model = Bot::class;
 
-    protected string $column = 'bot';
+    protected string $column = 'title';
 
     protected array $with = [];
 

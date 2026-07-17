@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
 use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 use Telegram\Presentation\MoonShine\Bot\BotResource;
+use Telegram\Presentation\MoonShine\BotCommand\BotCommandResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,
                 BotResource::class,
+                BotCommandResource::class,
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),

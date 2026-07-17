@@ -13,13 +13,19 @@ return new class extends Migration
     {
         Schema::create('telegram_bots', function (Blueprint $table) {
             $table->id();
+
             $table->boolean('is_active')->default(false);
+
+            $table->string('title');
+
             $table->string('bot');
+
             $table->string('token')->nullable();
+
             $table->string('webhook_service')->nullable();
 
-
             $table->timestamps();
+
             $table->softDeletes();
         });
     }

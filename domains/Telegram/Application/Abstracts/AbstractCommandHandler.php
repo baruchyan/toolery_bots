@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Telegram\Application\Abstracts;
 
-use App\Enums\TelegramBotEnum;
 use App\Models\User;
-use App\Repositories\UserRepository;
-use App\Services\UserService;
+use Telegram\Infrastructure\Models\Bot;
 use TelegramBot\Api\Client;
 use TelegramBot\Api\Types\Message;
 
 abstract class AbstractCommandHandler
 {
-    public function __construct(protected readonly Client $bot)
+    public function __construct(protected readonly Bot $bot, protected readonly Client $client)
     {
     }
 
@@ -21,31 +19,14 @@ abstract class AbstractCommandHandler
 
     protected User|null $user;
 
-    protected AbstractMenuService $menuService;
-
-    protected TelegramBotEnum $telegramBotEnum;
-
-    public function setTelegramBotEnum(TelegramBotEnum $telegramBotEnum): void
-    {
-        $this->telegramBotEnum = $telegramBotEnum;
-    }
-
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-
     public function handle(): \Closure
     {
         return function (Message $message) {
-            $this->user = UserService::getOrCreateUserByChatId(chatId: $message->getChat()->getId());
-
-            $this->menuService = AbstractMenuService::make(telegramBotEnum: $this->telegramBotEnum);
-
             return $this->commandHandler()(message: $message);
         };
     }
@@ -57,7 +38,7 @@ abstract class AbstractCommandHandler
         foreach ($commands as $commandHandlerClass) {
             /** @var AbstractCommandHandler $commandHandler */
             $commandHandler = new $commandHandlerClass($bot);
-            $commandHandler->setTelegramBotEnum(telegramBotEnum: $telegramBotEnum);
+            $commandHandler->setBotEnum(telegramBotEnum: $telegramBotEnum);
 
             $bot->command($commandHandler->getName(), $commandHandler->handle());
         }

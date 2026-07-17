@@ -12,7 +12,6 @@ use MoonShine\UI\Components\ActionButton;
 use MoonShine\UI\Fields\Enum;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
-use Telegram\Application\Traits\HasMoonshineModifyBreadcrumbsByStringableEnumValue;
 use Telegram\Domain\Enums\BotEnum;
 use Telegram\Presentation\MoonShine\Bot\BotResource;
 
@@ -21,7 +20,6 @@ use Telegram\Presentation\MoonShine\Bot\BotResource;
  */
 final class BotDetailPage extends DetailPage
 {
-    use HasMoonshineModifyBreadcrumbsByStringableEnumValue;
 
     /**
      * @return list<FieldContract>
@@ -38,13 +36,6 @@ final class BotDetailPage extends DetailPage
             Text::make('Token', 'token')
                 ->nullable(),
         ];
-    }
-
-    protected function onLoad(): void
-    {
-        $this->modifyBreadcrumbs();
-
-        parent::onLoad();
     }
 
     protected function buttons(): ListOf

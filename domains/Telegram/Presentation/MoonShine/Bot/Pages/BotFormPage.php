@@ -11,7 +11,6 @@ use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\UI\Fields\Checkbox;
 use MoonShine\UI\Fields\Enum;
 use MoonShine\UI\Fields\Text;
-use Telegram\Application\Traits\HasMoonshineModifyBreadcrumbsByStringableEnumValue;
 use Telegram\Domain\Enums\BotEnum;
 use Telegram\Presentation\MoonShine\Bot\BotResource;
 
@@ -21,15 +20,17 @@ use Telegram\Presentation\MoonShine\Bot\BotResource;
 final class BotFormPage extends FormPage
 {
 
-    use HasMoonshineModifyBreadcrumbsByStringableEnumValue;
-
     /**
      * @return list<ComponentContract|FieldContract>
      */
     protected function fields(): iterable
     {
         return [
-            Checkbox::make('is_active'),
+            Checkbox::make(label: 'Активность', column: 'is_active')
+                ->default(default: true),
+
+            Text::make('Название', 'title'),
+
             Enum::make('Бот', 'bot')
                 ->placeholder('Выберите из списка')
                 ->attach(BotEnum::class),
@@ -47,11 +48,5 @@ final class BotFormPage extends FormPage
         ];
     }
 
-    protected function onLoad(): void
-    {
-        $this->modifyBreadcrumbs();
-
-        parent::onLoad();
-    }
 
 }

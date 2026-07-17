@@ -8,5 +8,5 @@ use Telegram\Presentation\Controllers\WebhookController;
 Route::post('/webhook/{bot}', WebhookController::class)
     ->name('webhook');
 
-Route::get('/webhook/{bot:bot}', WebhookController::class)
+Route::get('/webhook/{bot}', WebhookController::class)
     ->name('webhookg');
