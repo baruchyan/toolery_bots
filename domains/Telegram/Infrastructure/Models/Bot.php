@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Telegram\Domain\Enums\BotEnum;
 
 /**
@@ -21,6 +22,7 @@ use Telegram\Domain\Enums\BotEnum;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
+ * @property Collection<int, BotCommand> $commands
  */
 class Bot extends Model
 {

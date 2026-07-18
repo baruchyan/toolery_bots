@@ -6,12 +6,14 @@ namespace Telegram\Application\Abstracts;
 
 use App\Models\User;
 use Telegram\Infrastructure\Models\Bot;
+use Telegram\Infrastructure\Models\BotCommand;
+use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Client;
 use TelegramBot\Api\Types\Message;
 
 abstract class AbstractCommandHandler
 {
-    public function __construct(protected readonly Bot $bot, protected readonly Client $client)
+    public function __construct(protected readonly Bot $bot, protected readonly Client|BotApi $client)
     {
     }
 
@@ -33,14 +35,26 @@ abstract class AbstractCommandHandler
 
     abstract protected function commandHandler(): \Closure;
 
-    public static function makeCommands(Client $bot, array $commands, TelegramBotEnum $telegramBotEnum): void
+    public static function makeCommands(Bot $bot, Client $client): void
     {
-        foreach ($commands as $commandHandlerClass) {
-            /** @var AbstractCommandHandler $commandHandler */
-            $commandHandler = new $commandHandlerClass($bot);
-            $commandHandler->setBotEnum(telegramBotEnum: $telegramBotEnum);
 
-            $bot->command($commandHandler->getName(), $commandHandler->handle());
-        }
+        $bot->commands->each(function (BotCommand $command) use ($client) {
+
+            if (is_null($command->handler) && !is_null($command->answer)) {
+                $client->command(name: $command->command, action: function (Message $message) use ($client, $command) {
+                    $client->sendMessage(
+                        chatId: $message->getChat()->getId(),
+                        text: $command->answer,
+                        parseMode: 'html'
+                    );
+                });
+
+                return;
+            }
+
+
+        });
+
+
     }
 }
